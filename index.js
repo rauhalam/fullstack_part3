@@ -41,6 +41,20 @@ const generateNumber = () => {
     return (`040-${endNumbers}`)
 }
 
+const findPersonById = id => {
+    const person = persons.find(person => person.id === id)
+    return person
+}
+
+const findPersonByName = name => {
+    const person = persons.find(person => person.name === name)
+    if (person) {
+        return person   
+    } else {
+        return ""
+    }
+}
+
 app.get('/', (request, response) => {
     console.log('GET localhost:3001')
     response.send('<h1>Phonebook</h1>')
@@ -60,7 +74,8 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    const person = findPersonById(id)
+    console.log(person)
     console.log(`GET ${baseUrl}/api/persons/${id}`)
 
     if (person) {
@@ -82,16 +97,23 @@ app.post('/api/persons', (request, response) => {
     console.log(`POST ${baseUrl}/api/persons`)
     const body = request.body
 
-    if (!body.name) {
-        return response.status(400).json({
-            error: 'Content missing'
-        })
-    }
-
     const person = {
         id: generateID(),
         name: body.name,
         number: generateNumber(),
+    }
+
+    const compare = findPersonByName(person.name)
+
+    if (!person.name || !person.number) {
+        return response.status(400).json({
+            error: 'Content missing'
+        })
+    } 
+    if (person.name === compare.name) {
+        return response.status(400).json({
+            error: 'Name must be unique'
+        })
     }
 
     persons = persons.concat(person)
