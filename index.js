@@ -1,8 +1,14 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 const baseUrl = 'localhost:3001'
 
+
+
+morgan.token('body', (request, response) => JSON.stringify(request.body))
+
 app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
 let persons = [
     {
@@ -56,27 +62,26 @@ const findPersonByName = name => {
 }
 
 app.get('/', (request, response) => {
-    console.log('GET localhost:3001')
+    /* console.log('GET localhost:3001') */
     response.send('<h1>Phonebook</h1>')
 })
 
 app.get('/info', (request, response) => {
-    console.log(`GET ${baseUrl}/info`)
+    /* console.log(`GET ${baseUrl}/info`) */
     const date = new Date()
     const numberOfPersons = persons.length
     response.send(`<p>Phonebook has info for ${numberOfPersons} people</p>\n${date}`)
 })
 
 app.get('/api/persons', (request, response) => {
-    console.log(`GET ${baseUrl}/api/persons`)
+    /* console.log(`GET ${baseUrl}/api/persons`) */
     response.json(persons)
 })
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     const person = findPersonById(id)
-    console.log(person)
-    console.log(`GET ${baseUrl}/api/persons/${id}`)
+    /* console.log(`GET ${baseUrl}/api/persons/${id}`) */
 
     if (person) {
         response.json(person)
@@ -88,13 +93,13 @@ app.get('/api/persons/:id', (request, response) => {
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
     persons = persons.filter(person => person.id !== id)
-    console.log(`DELETE ${baseUrl}/api/persons/${id}`)
+    /* console.log(`DELETE ${baseUrl}/api/persons/${id}`) */
 
     response.status(204).end()
 })
 
 app.post('/api/persons', (request, response) => {
-    console.log(`POST ${baseUrl}/api/persons`)
+    /* console.log(`POST ${baseUrl}/api/persons`) */
     const body = request.body
 
     const person = {
@@ -117,7 +122,7 @@ app.post('/api/persons', (request, response) => {
     }
 
     persons = persons.concat(person)
-    console.log(persons)
+    /* console.log(persons) */
 
     response.json(person)
 }) 
