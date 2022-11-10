@@ -9,12 +9,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../react/part2_exercises/phonebook/ && npm run build && cp -r build ../../../fullstackopen_part3",
     "deploy:full": "npm run build:ui && flyctl deploy"
-
   },
   "author": "Mirka Rauhala",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "morgan": "^1.10.0"
   },
