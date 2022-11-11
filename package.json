@@ -8,7 +8,8 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:ui": "rm -rf build && cd ../react/part2_exercises/phonebook/ && npm run build && cp -r build ../../../fullstackopen_part3",
-    "deploy:full": "npm run build:ui && flyctl deploy"
+    "deploy:full": "npm run build:ui && flyctl deploy",
+    "lint": "eslint ."
   },
   "author": "Mirka Rauhala",
   "license": "ISC",
@@ -16,9 +17,11 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "mongoose": "^6.7.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "eslint": "^8.27.0",
     "nodemon": "^2.0.20"
   }
 }
