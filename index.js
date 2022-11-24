@@ -13,33 +13,24 @@ app.use(cors())
 app.use(express.static('build'))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-
-/* const generateNumber = number => {
-    if (number === "") {
-        min = Math.ceil(100000)
-        max = Math.floor(999999)
-        const endNumbers = Math.floor(Math.random() * (max - min + 1) + min)
-        return (`040-${endNumbers}`) 
-    } else {
-        return number
-    }
-} */
-
 app.get('/', (request, response) => {
   response.send('<h1>Phonebook</h1>')
 })
 
-/* app.get('/info', (request, response) => {
-    const date = new Date()
-    const numberOfPersons = Person.estimatedDocumentCount()
-    console.log(numberOfPersons)
-    response.send(`<p>Phonebook has info for ${numberOfPersons} people</p>\n${date}`)
-}) */
+app.get('/info', (request, response, next) => {
+  const date = new Date()
+  Person.count()
+    .then(numberOfPeople => {
+      const info = `<p>Phonebook has info for ${numberOfPeople} people</p>\n${date}</p>`
+      response.send(info)
+    }).catch(error => next(error))
+})
 
-app.get('/api/persons', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
+app.get('/api/persons', (request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      response.json(persons)
+    }).catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -74,10 +65,24 @@ app.post('/api/persons', (request, response, next) => {
     })
   }
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  }).catch(error => next(error))
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    }).catch(error => next(error))
 
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number
+  }
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    }).catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
